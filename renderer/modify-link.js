@@ -9,17 +9,15 @@ export default (hast: any) =>
             if (type !== "page") {
                 return;
             }
+            node.properties = {
+                tagName: node.tagName,
+                pathname,
+                query,
+                as: node.properties.href,
+                childProps: { ...node.properties, href: undefined },
+            };
             node.type = "element";
             node.tagName = "x-link";
-            node.properties = { href: { pathname, query }, as: node.properties.href };
-            node.children = [
-                {
-                    type: "element",
-                    tagName: "a",
-                    properties: { ...node.properties, href: undefined },
-                    children: node.children,
-                },
-            ];
             return "skip";
         }
     });

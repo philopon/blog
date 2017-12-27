@@ -1,23 +1,22 @@
 //@flow
 import * as React from "react";
-import Link from "../components/link-with-data";
+import Link from "next/link";
+import fetch from "../utils/cached-fetch";
+
+const prefetch = async (path: string) => {
+    await fetch(`/post/${path}/post.json`);
+};
 
 const PostLink = ({ path, children }: { path: string, children: React$Element<string> }) => (
-    <Link prefetch withData as={`/post/${path}`} href={{ pathname: "/post", query: { path } }}>
-        {children}
+    <Link prefetch as={`/post/${path}`} href={{ pathname: "/post", query: { path } }}>
+        <a onMouseOver={() => prefetch(path)}>{children}</a>
     </Link>
 );
 
 export default (): React$Element<string> => (
     <div>
-        <PostLink path="test">
-            <a>test</a>
-        </PostLink>
-        <PostLink path="1990/02/21/hoge">
-            <a>hoge</a>
-        </PostLink>
-        <PostLink path="foo">
-            <a>foo</a>
-        </PostLink>
+        <PostLink path="test">test</PostLink>
+        <PostLink path="1990/02/21/hoge">hoge</PostLink>
+        <PostLink path="foo">foo</PostLink>
     </div>
 );

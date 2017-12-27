@@ -1,6 +1,6 @@
 //@flow
 import * as React from "react";
-import Link from "../components/link-with-data";
+import Link from "next/link";
 import hast2hyperscript from "hast-to-hyperscript";
 import Router from "next/router";
 import fetch from "../utils/cached-fetch";
@@ -19,7 +19,19 @@ const fetchPost = async (path: string): Promise<Object> => {
 
 const createElement = (type: string, props: {}, children) => {
     if (type === "x-link") {
-        return React.createElement(Link, { ...props, prefetch: true, withData: true }, children[0]);
+        const { tagName, pathname, query, as, rawChildProps, key } = props;
+        let childProps = rawChildProps;
+        if (pathname === "/post") {
+            childProps = {
+                ...rawChildProps,
+                onMouseOver: () => fetch(`/post/${query.path}/post.json`),
+            };
+        }
+        return (
+            <Link href={{ pathname, query }} key={key} as={as}>
+                {React.createElement(tagName, childProps, children)}
+            </Link>
+        );
     }
 
     return React.createElement(type, props, children);
