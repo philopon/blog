@@ -1,9 +1,9 @@
 //@flow
 import * as React from "react";
-import Link from "next/link";
+import Link from "../components/link-with-data";
 
 const PostLink = ({ path, children }: { path: string, children: React$Element<string> }) => (
-    <Link as={`/post/${path}`} href={{ pathname: "/post", query: { path } }}>
+    <Link prefetch withData as={`/post/${path}`} href={{ pathname: "/post", query: { path } }}>
         {children}
     </Link>
 );
