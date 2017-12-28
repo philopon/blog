@@ -3,27 +3,12 @@ import list from "./list";
 import post from "./post";
 import fs from "fs";
 import path from "path";
-
-const copyFile = (src: string, dst: string): Promise<string> =>
-    new Promise((resolve, reject) => {
-        (fs: any).copyFile(src, dst, err => {
-            if (err) return reject(err);
-            resolve(dst);
-        });
-    });
-
-const writeFile = (path, txt): Promise<string> =>
-    new Promise((resolve, reject) => {
-        fs.writeFile(path, txt, err => {
-            if (err) return reject(err);
-            resolve(path);
-        });
-    });
+import { copyFile, writeFile } from "../utils/file-promise";
 
 (async () => {
     const { posts, statics } = await list();
     const result = await Promise.all([
-        writeFile("out/.nojekyll", ""),
+        writeFile("out/.nojekyll", "").then(() => ".nojekyll"),
         ...posts.map(p => post(p)),
         ...statics.map(p => copyFile(p, path.join("out", p))),
     ]);

@@ -1,6 +1,7 @@
 ---
 title: test
 date: 1990-02-21 10:10
+tags: test, javascript, haskell, ghc:8.2
 ---
 
 ## test

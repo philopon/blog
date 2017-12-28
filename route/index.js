@@ -1,5 +1,5 @@
 // @flow
-import { isFileSync } from "../utils/is-file";
+import isFileSync from "../utils/is-file-sync";
 import * as dataFile from "./data-file";
 
 type RouteType = "page" | "json/page" | "static" | "none";

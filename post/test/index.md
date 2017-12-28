@@ -1,6 +1,7 @@
 ---
 title: test2
-date: 1990-02-21 10:10
+date: 1990-02-21 20:10
+tags: test, haskell, ghc:8.0, image
 ---
 
 ## test2

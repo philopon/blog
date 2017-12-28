@@ -13,8 +13,8 @@ const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
     createServer((req, res) => {
+        const parsedUrl = parse(req.url, true);
         (async () => {
-            const parsedUrl = parse(req.url, true);
             const { pathname } = parsedUrl;
 
             if (!pathname) {
@@ -33,7 +33,7 @@ app.prepare().then(() => {
                 return await serveStatic(req, res, __dirname + pathname);
             }
             return await handle(req, res, parsedUrl);
-        })();
+        })().catch(() => handle(req, res, parsedUrl));
     }).listen(3000, err => {
         if (err) throw err;
         console.log("> Ready on http://localhost:3000");

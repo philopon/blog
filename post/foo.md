@@ -1,6 +1,7 @@
 ---
 title: foo
-date: 1990-02-21 10:10
+date: 1999-02-21 10:10
+tags: foo, bar, baz, test
 ---
 
 ## foo
