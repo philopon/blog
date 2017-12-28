@@ -8,7 +8,7 @@ const prefetch = async (path: string) => {
 };
 
 const PostLink = ({ path, children }: { path: string, children: React$Element<string> }) => (
-    <Link prefetch as={`/post/${path}`} href={{ pathname: "/post", query: { path } }}>
+    <Link prefetch as={`/post/${path}/`} href={{ pathname: "/post", query: { path } }}>
         <a onMouseOver={() => prefetch(path)}>{children}</a>
     </Link>
 );

@@ -41,11 +41,7 @@ const Index = ({ body }: { body: Object }) => {
     return <div>{hast2hyperscript(createElement, body)}</div>;
 };
 
-Index.getInitialProps = async ({ query, res, asPath, isVirtualCall }) => {
-    if (!isVirtualCall && !isServer && asPath && !/\/$/.test(asPath)) {
-        Router.replace({ pathname: "/post", query }, asPath + "/");
-        return {};
-    }
+Index.getInitialProps = async ({ query }) => {
     return await fetchPost(query.path);
 };
 
