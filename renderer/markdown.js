@@ -12,22 +12,22 @@ const processor = unified()
     .use(markdown)
     .use(remark2rehype);
 
-export const renderString = (txt: string): Promise<Exact<{ data: {}, body: {} }>> => {
+export const renderString = (txt: string, base: string): Promise<Exact<{ data: {}, body: {} }>> => {
     return new Promise(async resolve => {
         const data = grayMatter(txt);
         const mdAST = processor.parse(data.content);
         const hAST = await processor.run(mdAST);
-        modifyLink(hAST);
+        modifyLink(hAST, base);
         const result = { data: data.data, body: hAST };
         resolve(result);
     });
 };
 
-export const renderFile = (path: string): Promise<Exact<{ data: {}, body: {} }>> => {
+export const renderFile = (path: string, base: string): Promise<Exact<{ data: {}, body: {} }>> => {
     return new Promise(async (resolve, reject) => {
         fs.readFile(path, (err, content) => {
             if (err) return reject(err);
-            renderString(content.toString()).then(resolve);
+            renderString(content.toString(), base).then(resolve);
         });
     });
 };
