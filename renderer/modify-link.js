@@ -2,12 +2,13 @@
 import route from "../route";
 import visit from "unist-util-visit";
 import * as url from "url";
-import path from "path";
+import * as path from "path";
+import urlJoin from "url-join";
 
-const canonicalizeUrl = (u, base) => {
-    u = url.parse(u);
-    if (!path.isAbsolute(u.pathname)) {
-        u.pathname = path.posix.join(base, u.pathname);
+const canonicalizeUrl = (urlString: string, base: string): string => {
+    const u = url.parse(urlString);
+    if (u.pathname && !path.isAbsolute(u.pathname)) {
+        u.pathname = urlJoin(base, u.pathname);
     }
     return url.format(u);
 };

@@ -1,5 +1,6 @@
 // @flow
-import { isFileSync } from "./utils/is-file";
+import { isFileSync } from "../utils/is-file";
+import * as dataFile from "./data-file";
 
 type RouteType = "page" | "json/page" | "static" | "none";
 
@@ -15,8 +16,8 @@ export default (pathname: string): Route => {
         return { pathname: "/", type: "page" };
     }
 
-    // post/path/to/post.json
-    if (/^post\/.*\/post\.json$/.test(pathname)) {
+    // post/path/to/index.json
+    if (dataFile.isPost(pathname)) {
         return { pathname, type: "json/page" };
     }
 

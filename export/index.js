@@ -1,6 +1,6 @@
 // @flow
 import list from "./list";
-import post_json from "./post-json";
+import post from "./post";
 import fs from "fs";
 import path from "path";
 
@@ -24,7 +24,7 @@ const writeFile = (path, txt): Promise<string> =>
     const { posts, statics } = await list();
     const result = await Promise.all([
         writeFile("out/.nojekyll", ""),
-        ...posts.map(p => post_json(p)),
+        ...posts.map(p => post(p)),
         ...statics.map(p => copyFile(p, path.join("out", p))),
     ]);
     for (const file of result) {

@@ -1,6 +1,7 @@
 // @flow
 
 import LRU from "lru-cache";
+import fetch from "isomorphic-unfetch";
 
 const cache = LRU({ max: 100, maxAge: 1000 * 60 * 60 });
 

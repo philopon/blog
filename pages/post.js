@@ -4,6 +4,7 @@ import Link from "next/link";
 import hast2hyperscript from "hast-to-hyperscript";
 import Router from "next/router";
 import fetch from "../utils/cached-fetch";
+import * as dataFile from "../route/data-file";
 
 const isServer = typeof window === "undefined";
 
@@ -13,18 +14,27 @@ const fetchPost = async (path: string): Promise<Object> => {
         const { default: renderer } = require("../renderer");
         return await renderer(`post/${path}`);
     } else {
-        return await fetch(`/post/${path}/post.json`);
+        return await fetch(dataFile.post(path));
     }
 };
 
-const createElement = (type: string, props: {}, children) => {
+interface Props {
+    tagName: string;
+    pathname: string;
+    query: { path: string };
+    as: string;
+    rawChildProps: {};
+    key: string;
+}
+
+const createElement = (type: string, props: Props, children) => {
     if (type === "x-link") {
         const { tagName, pathname, query, as, rawChildProps, key } = props;
         let childProps = rawChildProps;
         if (pathname === "/post") {
             childProps = {
                 ...rawChildProps,
-                onMouseOver: () => fetch(`/post/${query.path}/post.json`),
+                onMouseOver: () => fetch(dataFile.post(query.path)),
             };
         }
         return (
@@ -41,8 +51,8 @@ const Index = ({ body }: { body: Object }) => {
     return <div>{hast2hyperscript(createElement, body)}</div>;
 };
 
-Index.getInitialProps = async ({ query }) => {
-    return await fetchPost(query.path);
+Index.getInitialProps = async args => {
+    return await fetchPost(args.query.path);
 };
 
 export default Index;
