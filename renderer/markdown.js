@@ -9,20 +9,18 @@ import modifyLink from "./modify-link";
 import modifyData, { Data } from "./data";
 import { readFile } from "../utils/file-promise";
 
-const processor = unified()
-    .use({ settings: { position: false } })
-    .use(markdown)
-    .use(remark2rehype);
-
 export const renderString = async (
     txt: string,
     base: string
 ): Promise<Exact<{ data: Data, body: {} }>> => {
-    const data = grayMatter(txt);
-    const mdAST = processor.parse(data.content);
-    const hAST = await processor.run(mdAST);
-    modifyLink(hAST, base);
-    return { data: modifyData(data.data), body: hAST };
+    const { data, content } = grayMatter(txt);
+    const processor = unified()
+        .use(markdown, { position: false })
+        .use(remark2rehype)
+        .use(modifyLink, { base });
+
+    const body = await processor.run(processor.parse(content));
+    return { data: modifyData(data), body };
 };
 
 export const renderFile = async (

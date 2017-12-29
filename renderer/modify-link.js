@@ -5,16 +5,16 @@ import * as url from "url";
 import * as path from "path";
 import urlJoin from "url-join";
 
-const canonicalizeUrl = (urlString: string, base: string): string => {
+const canonicalizeUrl = (urlString: string, base?: string): string => {
     const u = url.parse(urlString);
     if (u.pathname && !path.isAbsolute(u.pathname)) {
-        u.pathname = urlJoin(base, u.pathname);
+        u.pathname = base !== undefined ? urlJoin(base, u.pathname) : u.pathname;
     }
     return url.format(u);
 };
 
-export default (hast: any, base: string) =>
-    visit(hast, (node, index, parent) => {
+export default ({ base }: { base?: string } = {}) => {
+    const visitor = node => {
         if (node.type !== "element") return;
 
         if (node.tagName === "a" && node.properties.href) {
@@ -40,4 +40,7 @@ export default (hast: any, base: string) =>
         if (node.tagName === "img" && node.properties.src) {
             node.properties.src = canonicalizeUrl(node.properties.src, base);
         }
-    });
+    };
+
+    return (ast: any) => visit(ast, visitor);
+};
