@@ -3,12 +3,11 @@ import route from "../route";
 import visit from "unist-util-visit";
 import * as url from "url";
 import * as path from "path";
-import urlJoin from "url-join";
 
 const canonicalizeUrl = (urlString: string, base?: string): string => {
     const u = url.parse(urlString);
     if (u.pathname && !path.isAbsolute(u.pathname)) {
-        u.pathname = base !== undefined ? urlJoin(base, u.pathname) : u.pathname;
+        u.pathname = base !== undefined ? path.posix.join(base, u.pathname) : u.pathname;
     }
     return url.format(u);
 };
