@@ -4,17 +4,16 @@ import Link from "next/link";
 import hast2hyperscript from "hast-to-hyperscript";
 import Router from "next/router";
 import fetch from "../utils/cached-fetch";
-import * as dataFile from "../route/data-file";
+import canonicalize from "../utils/canonicalize-path";
 
 const isServer = typeof window === "undefined";
 
 const fetchPost = async (path: string): Promise<Object> => {
-    path = path.replace(/^\/|\/$/g, "");
     if (isServer) {
-        const { default: renderer } = require("../renderer");
-        return await renderer(`post/${path}`);
+        const { renderRoute } = require("../renderer");
+        return await renderRoute(path);
     } else {
-        return await fetch(dataFile.post(path));
+        return await fetch(`${path}/index.json`);
     }
 };
 
@@ -29,16 +28,16 @@ interface Props {
 
 const createElement = (type: string, props: Props, children) => {
     if (type === "x-link") {
-        const { tagName, pathname, query, as, rawChildProps, key } = props;
+        const { tagName, pathname, as, rawChildProps, key } = props;
         let childProps = rawChildProps;
         if (pathname === "/post") {
             childProps = {
                 ...rawChildProps,
-                onMouseOver: () => fetch(dataFile.post(query.path)),
+                onMouseOver: () => fetch(`${as}/index.json`),
             };
         }
         return (
-            <Link href={{ pathname, query }} key={key} as={as}>
+            <Link href={pathname} key={key} as={as}>
                 {React.createElement(tagName, childProps, children)}
             </Link>
         );
@@ -51,8 +50,8 @@ const Index = ({ body }: { body: Object }) => {
     return <div>{hast2hyperscript(createElement, body)}</div>;
 };
 
-Index.getInitialProps = async args => {
-    return await fetchPost(args.query.path);
+Index.getInitialProps = async ({ asPath }) => {
+    return await fetchPost(canonicalize(asPath));
 };
 
 export default Index;

@@ -1,12 +1,12 @@
 // @flow
-import render from "../renderer";
+import { renderFile } from "../renderer";
 import fs from "fs";
-import * as dataFile from "../route/data-file";
 import { writeFile } from "../utils/file-promise";
+import { dirname } from "path";
 
-export default async (path: string): Promise<string> => {
-    const result = await render(`post/${path}`);
-    const out = `out${dataFile.post(path)}`;
+export default async ({ file, route }: { file: string, route: string }): Promise<string> => {
+    const result = await renderFile(file, `${dirname(route)}/`);
+    const out = `out${route}`;
     await writeFile(out, JSON.stringify(result));
     return out;
 };

@@ -1,4 +1,5 @@
 import list from "./export/list";
+import { dirname } from "path";
 
 module.exports = {
     webpack(config) {
@@ -11,7 +12,8 @@ module.exports = {
     async exportPathMap() {
         const { posts: postFiles } = await list();
         const posts = postFiles.reduce((acc, v) => {
-            acc[`/post/${v}`] = { page: "/post", query: { path: v } };
+            const route = dirname(v.route);
+            acc[route] = { page: "/post", as: route };
             return acc;
         }, {});
 

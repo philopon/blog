@@ -3,12 +3,14 @@ import route from "../route";
 import visit from "unist-util-visit";
 import * as url from "url";
 import * as path from "path";
+import canonicalize from "../utils/canonicalize-path";
 
 const canonicalizeUrl = (urlString: string, base?: string): string => {
     const u = url.parse(urlString);
     if (u.pathname && !path.isAbsolute(u.pathname)) {
-        u.pathname = base !== undefined ? path.posix.join(base, u.pathname) : u.pathname;
+        u.pathname = base !== undefined ? `${base}/${u.pathname}` : u.pathname;
     }
+    u.pathname = canonicalize(u.pathname);
     return url.format(u);
 };
 
@@ -18,12 +20,11 @@ export default ({ base }: { base?: string } = {}) => {
 
         if (node.tagName === "a" && node.properties.href) {
             const href = canonicalizeUrl(node.properties.href, base);
-            const { pathname, query, type } = route(href);
+            const { pathname, type } = route(href);
             if (type === "page") {
                 node.properties = {
                     tagName: node.tagName,
                     pathname,
-                    query,
                     as: href,
                     childProps: { ...node.properties, href: undefined },
                 };

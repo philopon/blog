@@ -1,12 +1,12 @@
 // @flow
 import isFileSync from "../utils/is-file-sync";
-import * as dataFile from "./data-file";
+import { dirname } from "path";
 
 type RouteType = "page" | "json/page" | "static" | "none";
 
 interface Route {
     type: RouteType;
-    pathname?: string;
+    pathname: string;
     query?: { path?: string };
 }
 
@@ -17,8 +17,8 @@ export default (pathname: string): Route => {
     }
 
     // post/path/to/index.json
-    if (dataFile.isPost(pathname)) {
-        return { pathname, type: "json/page" };
+    if (/^post\/.*\/index\.json$/.test(pathname)) {
+        return { pathname: `/${dirname(pathname)}`, type: "json/page" };
     }
 
     // post/path/to/article
@@ -36,5 +36,5 @@ export default (pathname: string): Route => {
         }
     }
 
-    return { type: "none" };
+    return { type: "none", pathname: "" };
 };

@@ -10,7 +10,7 @@ export default async () => {
     const result = await Promise.all([
         writeFile("out/.nojekyll", "").then(() => ".nojekyll"),
         ...posts.map(p => post(p)),
-        ...statics.map(p => copyFile(p, path.join("out", p))),
+        ...statics.map(p => copyFile(p.file, path.join("out", p.route))),
     ]);
     for (const file of result) {
         console.log(`asset set: ${file}`);
