@@ -5,7 +5,7 @@ import fs from "fs";
 import path from "path";
 import { copyFile, writeFile } from "../utils/file-promise";
 
-(async () => {
+export default async () => {
     const { posts, statics } = await list();
     const result = await Promise.all([
         writeFile("out/.nojekyll", "").then(() => ".nojekyll"),
@@ -15,4 +15,4 @@ import { copyFile, writeFile } from "../utils/file-promise";
     for (const file of result) {
         console.log(`asset set: ${file}`);
     }
-})();
+};

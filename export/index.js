@@ -1,2 +1,2 @@
 require("../babel");
-require("./index.babel");
+require("./index.babel").default();
